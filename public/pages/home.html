@@ -282,7 +282,7 @@
   .then(r => r.text())
   .then(html => {
     document.getElementById('footer-container').innerHTML = html;
-    initNav(); // pindah ke sini!
+    initNav(); 
   });
 
 fetch('/pages/sidebar.html')

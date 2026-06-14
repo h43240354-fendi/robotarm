@@ -1,29 +1,16 @@
-/**
- * session-manager.js
- * Include di SEMUA halaman terproteksi (home, kalibrasi, profile, dll)
- * <script src="/js/session-manager.js"></script>
- *
- * Fitur:
- *  1. Heartbeat ke server tiap 1 menit → mencatat aktivitas
- *  2. Deteksi gerakan mouse/keyboard → update lastActivity lokal
- *  3. Countdown 15 menit idle → warning di menit ke-13 → auto-logout menit ke-15
- *  4. Sinkronisasi status dari server setiap 2 menit
- */
-
 (function () {
   "use strict";
 
-  const IDLE_TIMEOUT_MS   = 15 * 60 * 1000; // 15 menit
-  const WARNING_AT_MS     = 13 * 60 * 1000; // warning di menit ke-13
-  const HEARTBEAT_MS      = 60 * 1000;       // kirim heartbeat tiap 1 menit
-  const SERVER_CHECK_MS   = 2 * 60 * 1000;   // sinkron server tiap 2 menit
+  const IDLE_TIMEOUT_MS   = 15 * 60 * 1000; 
+  const WARNING_AT_MS     = 13 * 60 * 1000; 
+  const HEARTBEAT_MS      = 60 * 1000;       
+  const SERVER_CHECK_MS   = 2 * 60 * 1000;   
 
   let lastActivity    = Date.now();
   let warningShown    = false;
   let warningEl       = null;
   let countdownTimer  = null;
 
-  // ── Perbarui lastActivity setiap ada interaksi ──────────────────
   ["mousemove", "keydown", "click", "scroll", "touchstart"].forEach(evt => {
     document.addEventListener(evt, () => {
       lastActivity = Date.now();
@@ -31,22 +18,18 @@
     }, { passive: true });
   });
 
-  // ── Kirim heartbeat ke server ────────────────────────────────────
   async function sendHeartbeat() {
     try {
       const res  = await fetch("/api/heartbeat", { method: "POST" });
       const data = await res.json();
 
       if (!data.loggedIn) {
-        // Server sudah invalidasi session (idle sweeper / logout dari tab lain)
         forceLogout("Sesi berakhir. Silakan login kembali.");
       }
     } catch (_) {
-      // Network error, coba lagi nanti
     }
   }
 
-  // ── Cek status dari server ───────────────────────────────────────
   async function checkServerStatus() {
     try {
       const res  = await fetch("/api/auth/status");
@@ -57,7 +40,6 @@
     } catch (_) {}
   }
 
-  // ── Paksa logout & redirect ──────────────────────────────────────
   async function forceLogout(pesan) {
     clearAllTimers();
     try {
@@ -67,7 +49,6 @@
     window.location.href = "/";
   }
 
-  // ── Tampilkan banner warning ─────────────────────────────────────
   function showWarning(sisaDetik) {
     if (warningShown && warningEl) {
       updateCountdownText(sisaDetik);
@@ -99,7 +80,6 @@
     `;
     document.body.prepend(warningEl);
 
-    // Mulai countdown visual
     let sisa = sisaDetik;
     countdownTimer = setInterval(() => {
       sisa--;
@@ -125,14 +105,12 @@
     }
   }
 
-  // ── Loop utama: cek idle setiap detik ───────────────────────────
   function startIdleWatcher() {
     setInterval(() => {
       const idleMs  = Date.now() - lastActivity;
       const sisaMs  = IDLE_TIMEOUT_MS - idleMs;
 
       if (idleMs >= IDLE_TIMEOUT_MS) {
-        // Sudah melewati batas → logout
         if (!warningShown) {
           forceLogout("Kamu tidak aktif selama 15 menit. Sesi berakhir.");
         }
@@ -140,11 +118,9 @@
       }
 
       if (idleMs >= WARNING_AT_MS) {
-        // Di zona warning (menit 13–15)
         const sisaDetik = Math.ceil(sisaMs / 1000);
         showWarning(sisaDetik);
       } else {
-        // Masih aktif → pastikan warning hilang
         if (warningShown) dismissWarning();
       }
     }, 1000);
@@ -154,21 +130,18 @@
     if (countdownTimer) clearInterval(countdownTimer);
   }
 
-  // ── Ekspor fungsi ke global untuk tombol "Saya Masih Di Sini" ───
   window.__sessionManager = {
     tetapAktif: () => {
       lastActivity = Date.now();
       dismissWarning();
-      sendHeartbeat(); // Langsung update server
+      sendHeartbeat();
     }
   };
 
-  // ── Mulai semua timer ────────────────────────────────────────────
   startIdleWatcher();
   setInterval(sendHeartbeat,    HEARTBEAT_MS);
   setInterval(checkServerStatus, SERVER_CHECK_MS);
 
-  // Heartbeat awal saat halaman dibuka
   sendHeartbeat();
 
   console.log("[SessionManager] Aktif — idle timeout 15 menit");

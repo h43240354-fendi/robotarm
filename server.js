@@ -11,30 +11,23 @@ require("dotenv").config();
 
 const app = express();
 const otpStore = new Map();
-
-// ─── MAP: activeUsers ──────────────────────────────────────────────
-// key: userId (string), value: { sessionId, lastActivity }
 const activeUsers = new Map();
 
-const IDLE_TIMEOUT_MS = 15 * 60 * 1000; // 15 menit
+const IDLE_TIMEOUT_MS = 15 * 60 * 1000;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
-// ─── SESSION MIDDLEWARE ────────────────────────────────────────────
 app.use(session({
   secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: false,
   cookie: {
     httpOnly: true,
-    maxAge: 1000 * 60 * 60 * 8  // 8 jam
+    maxAge: 1000 * 60 * 60 * 8 
   }
 }));
 
 app.use(express.static(path.join(__dirname, "public")));
-
-// Tambahkan setelah session middleware
 app.use((req, res, next) => {
   res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, private');
   res.setHeader('Pragma', 'no-cache');
@@ -42,7 +35,6 @@ app.use((req, res, next) => {
   next();
 });
 
-// ─── AUTH MIDDLEWARE ───────────────────────────────────────────────
 function requireLogin(req, res, next) {
   if (!req.session?.userId) {
     return res.redirect("/");
@@ -50,20 +42,15 @@ function requireLogin(req, res, next) {
 
   const userId = req.session.userId;
   const active = activeUsers.get(userId);
-
-  // Jika session ID di map tidak cocok → session ini sudah digantikan / dihapus
   if (!active || active.sessionId !== req.session.id) {
     req.session.destroy(() => {});
     return res.redirect("/?reason=session_expired");
   }
 
-  // Update lastActivity setiap request halaman
   active.lastActivity = Date.now();
   next();
 }
 
-
-// ─── MONGOOSE ─────────────────────────────────────────────────────
 mongoose.connect(process.env.MONGO_URI, {
   serverSelectionTimeoutMS: 5000
 })
@@ -79,20 +66,16 @@ const userSchema = new mongoose.Schema({
 
 const User = mongoose.model("User", userSchema);
 
-// ─── IDLE TIMEOUT SWEEPER ──────────────────────────────────────────
-// Cek setiap 1 menit, hapus session yang idle > 15 menit
 setInterval(() => {
   const now = Date.now();
   for (const [userId, data] of activeUsers.entries()) {
     if (now - data.lastActivity > IDLE_TIMEOUT_MS) {
       console.log(`[IDLE] Auto-logout userId: ${userId} karena idle > 15 menit`);
       activeUsers.delete(userId);
-      // Session express akan expire sendiri, tapi kita sudah hapus dari map
     }
   }
-}, 60 * 1000); // sweep tiap 1 menit
+}, 60 * 1000); 
 
-// ─── PAGE ROUTES ───────────────────────────────────────────────────
 app.get("/",         (req, res) => res.sendFile(path.join(__dirname, "public", "pages", "login.html")));
 app.get("/register", (req, res) => res.sendFile(path.join(__dirname, "public", "pages", "register.html")));
 app.get("/reset",    (req, res) => res.sendFile(path.join(__dirname, "public", "pages", "reset.html")));
@@ -101,7 +84,6 @@ app.get("/home",      requireLogin, (req, res) => res.sendFile(path.join(__dirna
 app.get("/kalibrasi", requireLogin, (req, res) => res.sendFile(path.join(__dirname, "public", "pages", "kalibrasi.html")));
 app.get("/profile",   requireLogin, (req, res) => res.sendFile(path.join(__dirname, "public", "pages", "profile.html")));
 
-// ─── OTP ──────────────────────────────────────────────────────────
 async function sendOTP(email, otp) {
   await axios.post(
     "https://api.brevo.com/v3/smtp/email",
@@ -139,7 +121,6 @@ app.post("/api/send-otp", async (req, res) => {
   }
 });
 
-// ─── REGISTER ─────────────────────────────────────────────────────
 app.post("/api/register", async (req, res) => {
   try {
     const { email, password, otp } = req.body;
@@ -165,7 +146,6 @@ app.post("/api/register", async (req, res) => {
   }
 });
 
-// ─── RESET PASSWORD ───────────────────────────────────────────────
 app.post("/api/reset-password", async (req, res) => {
   try {
     const { email, otp, newPassword } = req.body;
@@ -191,7 +171,6 @@ app.post("/api/reset-password", async (req, res) => {
   }
 });
 
-// ─── LOGIN ────────────────────────────────────────────────────────
 app.post("/api/login", async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -202,12 +181,10 @@ app.post("/api/login", async (req, res) => {
 
     const userId = user._id.toString();
 
-    // ── CEK SINGLE LOGIN ──────────────────────────────────────────
     if (activeUsers.has(userId)) {
       const existing = activeUsers.get(userId);
       const idleFor  = Date.now() - existing.lastActivity;
 
-      // Jika masih aktif (belum idle 15 menit) → tolak login
       if (idleFor < IDLE_TIMEOUT_MS) {
         const sisaMenit = Math.ceil((IDLE_TIMEOUT_MS - idleFor) / 60000);
         return res.status(409).json({
@@ -216,19 +193,15 @@ app.post("/api/login", async (req, res) => {
         });
       }
 
-      // Jika sudah idle → hapus session lama, izinkan login
       console.log(`[LOGIN] Session lama idle, digantikan: ${email}`);
       activeUsers.delete(userId);
     }
 
-    // Regenerate session untuk keamanan
     req.session.regenerate((err) => {
       if (err) return res.status(500).send("Gagal membuat session");
 
       req.session.userId = userId;
       req.session.email  = user.email;
-
-      // Daftarkan ke activeUsers
       activeUsers.set(userId, {
         sessionId   : req.session.id,
         lastActivity: Date.now()
@@ -249,7 +222,6 @@ app.post("/api/login", async (req, res) => {
   }
 });
 
-// ─── LOGOUT ───────────────────────────────────────────────────────
 app.post("/api/logout", (req, res) => {
   const userId = req.session?.userId;
   if (userId) activeUsers.delete(userId);
@@ -264,7 +236,6 @@ app.post("/api/logout", (req, res) => {
   });
 });
 
-// ─── API: CEK STATUS LOGIN ─────────────────────────────────────────
 app.get("/api/auth/status", (req, res) => {
   if (!req.session?.userId) {
     return res.json({ loggedIn: false });
@@ -277,7 +248,6 @@ app.get("/api/auth/status", (req, res) => {
     return res.json({ loggedIn: false, reason: "session_expired" });
   }
 
-  // Hitung sisa waktu idle
   const idleFor    = Date.now() - active.lastActivity;
   const sisaMs     = IDLE_TIMEOUT_MS - idleFor;
 
@@ -289,7 +259,6 @@ app.get("/api/auth/status", (req, res) => {
   });
 });
 
-// ─── API: HEARTBEAT (frontend kirim setiap 1 menit) ───────────────
 app.post("/api/heartbeat", (req, res) => {
   if (!req.session?.userId) {
     return res.status(401).json({ loggedIn: false });
@@ -306,7 +275,6 @@ app.post("/api/heartbeat", (req, res) => {
   res.json({ loggedIn: true, remainingMs: IDLE_TIMEOUT_MS });
 });
 
-// ─── API: DATA USER ───────────────────────────────────────────────
 app.get("/api/operator/me", requireLogin, async (req, res) => {
   try {
     const user = await User.findById(req.session.userId);

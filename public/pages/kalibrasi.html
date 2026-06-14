@@ -188,12 +188,11 @@
       window.location.href = "/";
     }
   }
-  // Mobile: bottomnav
+  
   fetch('../pages/footer.html').then(r => r.text()).then(html => {
     document.getElementById('footer-container').innerHTML = html;
   });
 
-  // Desktop: sidebar
   fetch('../pages/sidebar.html').then(r => r.text()).then(html => {
     document.getElementById('sidebar-container').innerHTML = html;
     initNav();

@@ -229,4 +229,3 @@ form { display: flex; flex-direction: column; gap: 14px; }
   text-decoration: none;
 }
 .footer-link a:hover { text-decoration: underline; }
-

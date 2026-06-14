@@ -1,8 +1,6 @@
 .page-tab.active svg { stroke: #fff; }
-
 .page { display: none; flex-direction: column; gap: 12px; width: 100%; }
 .page.active { display: flex; }
-
 
 .pin-hidden {display: none;}
 #pinConfigGrid { display: flex; flex-direction: column; gap: 8px; }

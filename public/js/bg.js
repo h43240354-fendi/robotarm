@@ -1,10 +1,8 @@
-
 (function () {
   const canvas = document.getElementById('iot-bg-canvas');
   if (!canvas) return;
   const ctx = canvas.getContext('2d');
 
-  // ── Ukuran canvas mengikuti window ──────────────────────────────
   function resize() {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
@@ -18,18 +16,13 @@
   const W = () => canvas.width;
   const H = () => canvas.height;
 
-  // ── Palet warna biru ────────────────────────────────────────────
   const COLORS = [
     '#1a56db', '#378add', '#185fa5',
     '#85b7eb', '#b5d4f4', '#2671c8', '#4a9de0'
   ];
 
-  // ═══════════════════════════════════════════════════════════════
-  // PARTIKEL — titik-titik mengambang naik ke atas
-  // ═══════════════════════════════════════════════════════════════
   class Particle {
     constructor() { this.reset(true); }
-
     reset(init = false) {
       this.x = Math.random() * W();
       this.y = init ? Math.random() * H() : H() + 10;
@@ -73,9 +66,6 @@
     }
   }
 
-  // ═══════════════════════════════════════════════════════════════
-  // GARIS KONEKSI — hubungkan partikel yang berdekatan
-  // ═══════════════════════════════════════════════════════════════
   function drawConnections(particles) {
     const MAX_DIST = 120;
     for (let i = 0; i < particles.length; i++) {
@@ -96,9 +86,6 @@
     }
   }
 
-  // ═══════════════════════════════════════════════════════════════
-  // GELOMBANG — sinusoidal bergerak horizontal
-  // ═══════════════════════════════════════════════════════════════
   class Wave {
     constructor(yFraction, amp, period, speed, color, alpha) {
       this.yFrac = yFraction;
@@ -125,9 +112,6 @@
     }
   }
 
-  // ═══════════════════════════════════════════════════════════════
-  // RIPPLE — efek sinyal wireless / gelombang radio
-  // ═══════════════════════════════════════════════════════════════
   class Ripple {
     constructor() { this.reset(); }
 
@@ -161,9 +145,6 @@
     }
   }
 
-  // ═══════════════════════════════════════════════════════════════
-  // DATA PULSE — partikel bergerak dengan ekor trailing (paket data)
-  // ═══════════════════════════════════════════════════════════════
   class DataPulse {
     constructor() { this.reset(); }
 

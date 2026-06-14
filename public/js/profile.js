@@ -190,7 +190,6 @@ document.addEventListener('DOMContentLoaded', async() => {
   const user = await requireAuth();
   if (!user) return;
 
-    // Ambil data lengkap dari /api/operator/me
   const res     = await fetch('/api/operator/me');
   const profile = await res.json();
 
@@ -198,18 +197,17 @@ document.addEventListener('DOMContentLoaded', async() => {
     email    : profile.email,
     lastLogin: profile.lastLogin
     ? new Date(profile.lastLogin).toLocaleString('id-ID', {
-      timeZone: 'Asia/Jakarta', // ← fix timezone ke WIB
+      timeZone: 'Asia/Jakarta', 
       day     : '2-digit',
       month   : 'long',
       year    : 'numeric',
       hour    : '2-digit',
       minute  : '2-digit',
-      hour12  : false           // ← pakai format 24 jam
-    }).replace(/\./g, ':')      // ← ganti titik jadi titik dua pada jam
+      hour12  : false           
+    }).replace(/\./g, ':')      
   : '—'
   });
 
-  // renderUserProfile(user);
   setupDeleteAccount({ email: profile.email });
   setupNotificationToggle();
   setupNavigation();
