@@ -77,8 +77,8 @@ async function setConnectionMode(mode) {
   document.getElementById('mode-wifi')?.classList.toggle('active', mode === 'wifi');
   document.getElementById('mode-usb')?.classList.toggle('active', mode === 'usb');
   const wsInput   = document.getElementById('ws-url');
-  const serialSel = document.getElementById('serial-port');
   const wsWrap    = document.getElementById('ws-input-wrap');
+  const serialSel = document.getElementById('serial-port');
   if (wsWrap)    wsWrap.style.display    = mode === 'wifi' ? 'flex' : 'none';
   if (serialSel) serialSel.style.display = mode === 'usb'  ? 'block' : 'none';
   if (mode === 'usb') await loadSerialPorts();
