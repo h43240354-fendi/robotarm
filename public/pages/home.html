@@ -278,19 +278,18 @@
     }
   }
 
-  fetch('../pages/footer.html').then(r => r.text()).then(html => {
+  fetch('../pages/footer.html')
+  .then(r => r.text())
+  .then(html => {
     document.getElementById('footer-container').innerHTML = html;
+    initNav(); // pindah ke sini!
   });
 
-  fetch('/pages/sidebar.html')
+fetch('/pages/sidebar.html')
   .then(r => r.text())
   .then(html => {
     document.getElementById('sidebar-container').innerHTML = html;
-    // Kasih sedikit delay agar DOM benar-benar siap
-    setTimeout(() => {
-      initNav();
-      initLogout();
-    }, 100);
+    initLogout();
   });
 </script>
 </body>
