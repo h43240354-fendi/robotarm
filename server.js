@@ -197,6 +197,9 @@ app.post("/api/login", async (req, res) => {
       activeUsers.delete(userId);
     }
 
+    user.lastLogin = new Date();
+    await user.save();
+
     req.session.regenerate((err) => {
       if (err) return res.status(500).send("Gagal membuat session");
 
@@ -286,7 +289,7 @@ app.get("/api/operator/me", requireLogin, async (req, res) => {
       sector   : user.sector,
       lastLogin: user.updatedAt
     });
-  } catch (error) {
+  } catch (error) { 
     res.status(500).json({ message: "Gagal mengambil data server" });
   }
 });

@@ -285,10 +285,11 @@
     initNav(); 
   });
 
-fetch('/pages/sidebar.html')
+fetch('../pages/sidebar.html')
   .then(r => r.text())
   .then(html => {
     document.getElementById('sidebar-container').innerHTML = html;
+    initNav();
     initLogout();
   });
 </script>

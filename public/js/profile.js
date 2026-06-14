@@ -44,7 +44,7 @@ async function requireAuth() {
     redirect(ROUTES.LOGIN);
     return null;
   }
-  return data; // berisi { loggedIn: true, email: "..." }
+  return data; 
 }
 
 
