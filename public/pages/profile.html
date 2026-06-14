@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <link rel="icon" type="image/svg+xml" href="../assets/arm.svg">
+  <title>Profil</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <script src="../js/auth.js"></script>
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/profile.css">
+</head>
+<body>
+<div class="layout-root">
+<div id="sidebar-container"></div>
+<div class="app-shell">
+<div class="app">
+
+  <div class="topnav">
+    <div class="topnav-left">
+      <div class="topnav-icon">
+        <svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 5-2.3 5-5s-2.3-5-5-5-5 2.3-5 5 2.3 5 5 5zm0 2c-3.3 0-10 1.7-10 5v2h20v-2c0-3.3-6.7-5-10-5z"/></svg>
+      </div>
+      <div class="topnav-title">PROFIL</div>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <div class="p-card">
+      <div class="p-card-header"><span>Informasi Akun</span></div>
+      <div class="info-row">
+        <div class="info-label">Email</div>
+        <div class="info-value">
+          <span id="display-email">—</span>
+        </div>
+      </div>
+      <div class="info-row">
+        <div class="info-label">Waktu Masuk</div>
+        <div class="info-value">
+          <span id="display-lastlogin">—</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="p-card">
+      <div class="p-card-header"><span>Preferensi</span></div>
+
+      <!-- <div class="pref-row" id="pref-language">
+        <div class="pref-left">
+          <div class="pref-icon">
+            <svg viewBox="0 0 24 24">
+              <circle cx="12" cy="12" r="10"/>
+              <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+            </svg>
+          </div>
+          <span class="pref-label">Bahasa</span>
+        </div>
+        <div class="pref-right">
+          English (US)
+          <div class="chevron">
+            <svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+          </div>
+        </div>
+      </div> -->
+      <a href="https://drive.google.com/file/d/1OLw3hWDPiyCsd8k4WmavMJE9hCGzx-DX/view?usp=drive_link" target="_blank" rel="noopener noreferrer" class="pref-row" id="pref-faq" style="text-decoration: none; color: inherit;">
+  <div class="pref-left">
+    <div class="pref-icon">
+      <svg viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="10"/>
+        <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
+        <line x1="12" y1="17" x2="12.01" y2="17"/>
+      </svg>
+    </div>
+    <span class="pref-label">Cara penggunaan</span>
+  </div>
+  <div class="pref-right">
+    <div class="chevron">
+      <svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+    </div>
+  </div>
+</a>
+  <div class="pref-left">
+        </div>
+      </div>
+
+    <div class="p-btn-area">
+      <button class="btn-delete" id="profile-btn-logout">
+        <svg viewBox="0 0 24 24">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+          <polyline points="16 17 21 12 16 7"/>
+          <line x1="21" y1="12" x2="9" y2="12"/>
+        </svg>
+        Keluar
+      </button>
+      <button class="btn-logout" id="btn-delete">
+        <svg viewBox="0 0 24 24">
+          <polyline points="3 6 5 6 21 6"/>
+          <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+          <path d="M10 11v6M14 11v6"/>
+          <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
+        </svg>
+        Hapus Akun
+      </button>
+    </div>
+
+  </div>
+
+</div>
+</div>
+
+<div class="modal-backdrop" id="modal-logout">
+  <div class="modal-box">
+    <div class="modal-icon danger">
+      <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#d32f2f" stroke-width="2">
+        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+        <polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
+      </svg>
+    </div>
+    <div class="modal-title">Konfirmasi Logout</div>
+    <div class="modal-desc">Kamu yakin ingin keluar dari sesi ini? Semua data sesi aktif akan dihapus.</div>
+    <div class="modal-actions">
+      <button class="modal-cancel" id="logout-cancel">Batal</button>
+      <button class="modal-confirm-danger" id="logout-confirm">Logout</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-backdrop" id="modal-delete">
+  <div class="modal-box">
+    <div class="modal-icon danger">
+      <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#d32f2f" stroke-width="2">
+        <polyline points="3 6 5 6 21 6"/>
+        <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+        <path d="M10 11v6M14 11v6"/>
+        <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
+      </svg>
+    </div>
+    <div class="modal-title">Hapus Akun?</div>
+    <div class="modal-desc">Tindakan ini permanen dan tidak dapat dibatalkan. Seluruh data operator akan dihapus dari sistem.</div>
+    <div class="modal-actions">
+      <button class="modal-cancel" id="delete-cancel">Batal</button>
+      <button class="modal-confirm-danger" id="delete-confirm">Hapus Akun</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<div id="footer-container"></div>
+<script src="../js/profile.js"></script>
+<script src="../js/nav.js"></script>
+<script src="../js/logout.js"></script>
+<script>
+    fetch('../pages/footer.html').then(r => r.text()).then(html => {
+      document.getElementById('footer-container').innerHTML = html;
+    });
+
+    fetch('/pages/sidebar.html').then(r => r.text()).then(html => {
+      document.getElementById('sidebar-container').innerHTML = html;
+      initNav();
+      initLogout();
+    });
+</script>
+</body>
+</html>

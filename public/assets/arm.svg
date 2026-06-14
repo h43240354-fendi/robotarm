@@ -1,0 +1,30 @@
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    /* Default: Jika browser menggunakan tema terang (Light Mode) */
+    :root { 
+      color: #1a56db; /* Mengubah warna garis menjadi biru agar terlihat di tab putih */
+    } 
+    
+    /* Jika browser menggunakan tema gelap (Dark Mode) */
+    @media (prefers-color-scheme: dark) {
+      :root { 
+        color: #ffffff; /* Otomatis berubah jadi putih di tab hitam */
+      }
+    }
+  </style>
+  <path d="M 4 21 h 2.5 l 0.5 -2 h 1.5 l 0.5 2 a 2 2 0 0 1 4 0 l 0.5 -2 h 1.5 l 0.5 2 h 2.5" />
+  <path d="M 7.5 19 c 0.8 -1.5 2.2 -2.5 4.5 -2.5 s 3.7 1 4.5 2.5" />
+  <path d="M 10.8 16.5 L 8 12.8" />
+  <path d="M 12.5 17 L 9.3 11.5" />
+  <circle cx="6.5" cy="11.5" r="2.5" />
+  <circle cx="6.5" cy="11.5" r="0.8" /> 
+  <path d="M 8.2 9.8 L 11.2 6.8" />
+  <path d="M 7.2 8.2 L 10.2 5.2" />
+  <circle cx="12" cy="5" r="2.5" />
+  <circle cx="12" cy="5" r="0.8" />
+  <path d="M 13.8 6.8 L 16.2 9.2" />
+  <path d="M 12.8 5.8 L 15.2 8.2" />
+  <circle cx="17.2" cy="10.8" r="1.2" />
+  <path d="M 18.2 10 L 21 10 L 21.5 13" />
+  <path d="M 17.5 11.8 L 17.5 13.5 L 20 14" />
+</svg>

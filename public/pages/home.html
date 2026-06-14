@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<link rel="icon" type="image/svg+xml" href="../assets/arm.svg">
+<title>Kontrol</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script src="../js/auth.js"></script>
+<link rel="stylesheet" href="../css/base.css">
+<link rel="stylesheet" href="../css/home.css">
+<link rel="stylesheet" href="../css/logs.css">
+
+</head>
+<body>
+<div class="layout-root">
+<div id="sidebar-container"></div>
+<div class="app-shell">
+  <div class="topnav">
+    <div class="topnav-left">
+      <div class="topnav-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M 4 21 h 2.5 l 0.5 -2 h 1.5 l 0.5 2 a 2 2 0 0 1 4 0 l 0.5 -2 h 1.5 l 0.5 2 h 2.5" />
+          <path d="M 7.5 19 c 0.8 -1.5 2.2 -2.5 4.5 -2.5 s 3.7 1 4.5 2.5" />
+          <path d="M 10.8 16.5 L 8 12.8" />
+          <path d="M 12.5 17 L 9.3 11.5" />
+          <circle cx="6.5" cy="11.5" r="2.5" />
+          <circle cx="6.5" cy="11.5" r="0.8" /> 
+          <path d="M 8.2 9.8 L 11.2 6.8" />
+          <path d="M 7.2 8.2 L 10.2 5.2" />
+          <circle cx="12" cy="5" r="2.5" />
+          <circle cx="12" cy="5" r="0.8" />
+          <path d="M 13.8 6.8 L 16.2 9.2" />
+          <path d="M 12.8 5.8 L 15.2 8.2" />
+          <circle cx="17.2" cy="10.8" r="1.2" />
+          <path d="M 18.2 10 L 21 10 L 21.5 13" />
+          <path d="M 17.5 11.8 L 17.5 13.5 L 20 14" />
+        </svg>
+      </div>
+      <span class="topnav-title">KONTROL</span>
+    </div>
+    <div class="topnav-right">
+      <span class="status-badge offline" id="status-badge">TERPUTUS</span>
+    </div>
+  </div>
+
+  <div class="page-tabs">
+    <button class="page-tab active" id="ptab-controller" onclick="switchPageTab('controller')"><b>Kontrol</b></button>
+    <button class="page-tab"        id="ptab-logs"       onclick="switchPageTab('logs')"><b>Log</b></button>
+  </div>
+
+  <div class="page-panel active" id="panel-controller">
+    <div class="content">
+      <div class="card card-koneksi">
+        <div class="sec-label">Koneksi</div>
+        <div class="conn-mode">
+          <button type="button" class="mode-btn active" id="mode-wifi" onclick="setConnectionMode('wifi')">WiFi</button>
+          <button type="button" class="mode-btn"        id="mode-usb"  onclick="setConnectionMode('usb')">USB</button>
+        </div>
+        <div class="esp-row">
+          <div class="ws-input-wrap" id="ws-input-wrap">
+            <span class="ws-prefix" id="ws-prefix">ws://</span>
+            <input class="ws-input" id="ws-url" type="text" placeholder="192.168.1.x" style="text-align: left; padding-left: 8px;">
+            <span class="ws-suffix" id="ws-suffix">:81</span>
+          </div>
+        <select class="ws-input" id="serial-port" style="display:none;">
+        <option value="">Pilih Port</option>
+        </select>
+          <button class="btn-connect" id="btn-connect">
+            <svg viewBox="0 0 24 24"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg>
+            Hubungkan
+          </button>
+        </div>
+      </div>
+
+      <div class="tile-grid card-tiles">
+        <div class="tile">
+          <div class="tile-label">waktu aktif</div>
+          <div class="tile-value" id="uptime">00:00:00</div>
+        </div>
+        <div class="tile">
+          <div class="tile-label">Latency</div>
+          <div class="tile-value" id="latency">0 ms</div>
+        </div>
+      </div>
+
+      <div class="sorter-wrap card-sorter">
+        <div class="sorter-title">Sortir Warna</div>
+        <div class="sorter-sub">Real-time monitoring</div>
+      </div>
+
+      <div class="card card-kontrol">
+        <div class="sec-label">Kontrol Panel</div>
+        <div class="ctrl-grid">
+          <button class="btn-start" id="btn-start">
+            <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+            START
+          </button>
+          <button class="btn-stop" id="btn-stop">
+            <svg viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="1"/></svg>
+            STOP
+          </button>
+        </div>
+        <button class="btn-emergency" id="btn-emergency">
+          <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+          EMERGENCY
+        </button>
+      </div>
+
+      <div class="card card-sensor">
+        <div class="sec-label">Deteksi Sensor</div>
+        <div class="sensor-body">
+          <div class="sensor-icon-wrap" id="sensor-wrap">
+            <div class="sensor-ripple" id="sensor-ripple"></div>
+            <div class="sensor-icon" id="sensor-icon">
+              <svg viewBox="0 0 24 24"><path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-2.98 0-5.4-2.42-5.4-5.4 0-1.81.89-3.42 2.26-4.4-.44-.06-.9-.1-1.36-.1z"/></svg>
+            </div>
+          </div>
+          <div class="sensor-info">
+            <span class="sensor-badge" id="sensor-badge">— MENUNGGU —</span>
+            <div class="sensor-color-name" id="sensor-color-name">—</div>
+            <div class="sensor-rgb-row">
+              <div class="sensor-swatch" id="sensor-swatch"></div>
+              <span class="sensor-rgb-text" id="sensor-rgb">R:— &nbsp; G:— &nbsp; B:—</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card card-filter">
+        <div class="sec-label">Filter Penyortiran</div>
+        <div class="filter-list">
+          <div class="filter-opt active" onclick="selectFilter(this)">
+            <div class="radio-ring"><div class="radio-dot"></div></div>
+            <span class="filter-lbl">Sortir Semua Warna 🔴🔵</span>
+          </div>
+          <div class="filter-opt" onclick="selectFilter(this)">
+            <div class="radio-ring"><div class="radio-dot"></div></div>
+            <span class="filter-lbl">Sortir Merah Saja 🔴</span>
+          </div>
+          <div class="filter-opt" onclick="selectFilter(this)">
+            <div class="radio-ring"><div class="radio-dot"></div></div>
+            <span class="filter-lbl">Sortir Biru Saja 🔵</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card card-statistik">
+        <div class="sec-label">Statistik Live</div>
+        <div class="stat-grid">
+          <div class="stat-tile">
+            <div class="stat-tile-header">
+              <div class="legend-dot-b"></div>
+              <div class="stat-clabel">Merah</div>
+            </div>
+            <div class="stat-val" id="stat-merah">0</div>
+          </div>
+          <div class="stat-tile">
+            <div class="stat-tile-header">
+              <div class="legend-dot-y"></div>
+              <div class="stat-clabel">Biru</div>
+            </div>
+            <div class="stat-val" id="stat-biru">0</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card card-grafik">
+        <div class="chart-header">
+          <div class="sec-label" style="margin-bottom:0">Aktivitas</div>
+          <div class="chart-legend">
+            <div class="legend-item"><div class="legend-dot-b"></div>Merah</div>
+            <div class="legend-item"><div class="legend-dot-y"></div>Biru</div>
+          </div>
+        </div>
+        <div class="chart-tabs">
+          <button class="chart-tab active" id="tab-menit" onclick="switchChart('menit')">Per Menit</button>
+          <button class="chart-tab" id="tab-jam"   onclick="switchChart('jam')">Per Jam</button>
+          <button class="chart-tab" id="tab-hari"  onclick="switchChart('hari')">Per Hari</button>
+        </div>
+        <div class="bar-chart" id="bar-chart"></div>
+        <div class="chart-x-labels" id="chart-labels"></div>
+      </div>
+
+      <div class="card card-ekspor">
+        <div class="sec-label">Ekspor Data</div>
+        <div class="ekspor-sub">Unduh laporan aktivitas</div>
+        <button class="btn-unduh" onclick="exportData()">
+          <svg viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="7 10 12 15 17 10"/>
+            <line x1="12" y1="15" x2="12" y2="3"/>
+          </svg>
+          Unduh Laporan
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-panel" id="panel-logs">
+    <div class="logs-wrap">
+      <div class="tab-bar" style="margin: 13px 16px 10px;">
+        <button class="tab-btn active" onclick="switchLogTab('activity', this)">Aktivitas</button>
+        <button class="tab-btn"        onclick="switchLogTab('latency', this)">Latency</button>
+      </div>
+      <div id="tab-activity" class="tab-panel active" style="flex:1;">
+        <div class="log-card" style="margin: 0 16px 10px; flex:1;">
+          <div class="log-scroll" id="activity-scroll" style="max-height: calc(100vh - 280px);"></div>
+          <div class="end-buffer">-- Akhir --<div class="end-line"></div></div>
+        </div>
+      </div>
+
+      <div id="tab-latency" class="tab-panel" style="flex:1;">
+        <div class="log-card" style="margin: 0 16px 10px;">
+          <div class="latency-stats">
+            <div class="stat-box">
+              <span class="stat-label">Saat ini</span>
+              <span class="stat-value" id="stat-cur">— ms</span>
+            </div>
+            <div class="stat-box">
+              <span class="stat-label">Rata-Rata (60s)</span>
+              <span class="stat-value" id="stat-avg">— ms</span>
+            </div>
+            <!-- <div class="stat-box">
+              <span class="stat-label">Paket Hilang</span>
+              <span class="stat-value" id="stat-loss">— %</span>
+            </div> -->
+          </div>
+
+          <div class="sparkline-wrap">
+            <div class="spark-label">Latensi (60 sampel)</div>
+            <canvas id="spark" height="48"></canvas>
+          </div>
+          <div class="log-scroll" id="latency-scroll" style="max-height:300px;"></div>
+          <div class="end-buffer">Live Time Recording<div class="end-line"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="modal-backdrop" id="modal-logout">
+  <div class="modal-box">
+    <div class="modal-icon danger">
+      <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#d32f2f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+        <polyline points="16 17 21 12 16 7"></polyline>
+        <line x1="21" y1="12" x2="9" y2="12"></line>
+      </svg>
+    </div>
+    <div class="modal-title">Keluar dari Sistem?</div>
+    <div class="modal-desc">Anda harus memasukkan email dan password kembali untuk masuk kembali</div>
+    <div class="modal-actions">
+      <button class="modal-cancel" id="logout-modal-cancel">Batal</button>
+      <button class="modal-confirm-danger" id="logout-modal-confirm">Logout</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<div id="footer-container"></div>
+
+<script src="../js/home.js"></script>
+<script src="../js/logs.js"></script>
+<script src="../js/nav.js"></script>
+<script src="../js/logout.js"></script>
+
+<script>
+  async function logout() {
+    const res = await fetch("/api/logout", { method: "POST" });
+    const data = await res.json();
+    if (data.success) {
+      window.location.href = "/";
+    }
+  }
+
+  fetch('../pages/footer.html').then(r => r.text()).then(html => {
+    document.getElementById('footer-container').innerHTML = html;
+  });
+
+  fetch('/pages/sidebar.html').then(r => r.text()).then(html => {
+    document.getElementById('sidebar-container').innerHTML = html;
+    initNav();
+    initLogout();
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,119 @@
+    .profile-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px 4px 14px;
+    }
+
+    .avatar-wrap {
+      position: relative;
+      width: 90px; height: 90px;
+      margin-bottom: 13px;
+    }
+    .avatar-svg {
+      width: 90px; height: 90px;
+      border-radius: 50%;
+      display: block;
+    }
+    .avatar-edit {
+      position: absolute;
+      bottom: 2px; right: 2px;
+      width: 27px; height: 27px;
+      background: #1a56db;
+      border-radius: 50%;
+      padding: 6px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(26,86,219,.35);
+    }
+    .avatar-edit svg { stroke: #fff; fill: none; stroke-width: 2; width: 100%; height: 100%; }
+
+    .operator-name { font-size: 18px; font-weight: 800; color: #111827; margin-bottom: 3px; }
+    .operator-sector { font-size: 13px; color: #6b7280; margin-bottom: 10px; }
+
+    .info-row {
+      padding: 13px 16px;
+      border-bottom: 1px solid #f0f4fa;
+      display: flex; flex-direction: column; gap: 4px;
+    }
+    .info-row:last-child { border-bottom: none; }
+    .info-label {
+      font-size: 10px; color: #9ca3af;
+      font-weight: 700; text-transform: uppercase; letter-spacing: .5px;
+    }
+    .info-value {
+      font-size: 14px; font-weight: 600; color: #374151;
+      display: flex; align-items: center; justify-content: space-between;
+      word-break: break-all;
+    }
+    .info-value .highlight { color: #1a56db; font-weight: 700; font-family: monospace; }
+    .copy-btn {
+      flex-shrink: 0; width: 20px; height: 20px;
+      cursor: pointer; opacity: .5; margin-left: 8px;
+      transition: opacity .2s;
+    }
+    .copy-btn:hover { opacity: 1; }
+    .copy-btn svg { stroke: #374151; fill: none; stroke-width: 2; width: 100%; height: 100%; }
+
+    .pref-row {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 16px;
+      border-bottom: 1px solid #f0f4fa;
+      cursor: pointer;
+    }
+    .pref-row:last-child { border-bottom: none; }
+    .pref-left { display: flex; align-items: center; gap: 12px; }
+    .pref-icon { width: 20px; height: 20px; flex-shrink: 0; }
+    .pref-icon svg { stroke: #1a56db; fill: none; stroke-width: 2; width: 100%; height: 100%; display: block; }
+    .pref-label { font-size: 14px; font-weight: 600; color: #374151; }
+    .pref-right { display: flex; align-items: center; gap: 6px; color: #6b7280; font-size: 13px; }
+    .chevron { width: 14px; height: 14px; flex-shrink: 0; }
+    .chevron svg { stroke: #9ca3af; fill: none; stroke-width: 2.5; width: 100%; height: 100%; display: block; }
+
+    .p-toggle {
+      width: 42px; height: 24px; background: #dde3ed;
+      border-radius: 14px; position: relative;
+      cursor: pointer; transition: background .25s;
+      flex-shrink: 0;
+    }
+    .p-toggle::after {
+      content: ''; position: absolute;
+      top: 3px; left: 3px;
+      width: 18px; height: 18px;
+      background: #fff; border-radius: 50%;
+      transition: transform .25s;
+      box-shadow: 0 1px 3px rgba(0,0,0,.15);
+    }
+    .p-toggle.active { background: #1a56db; }
+    .p-toggle.active::after { transform: translateX(18px); }
+
+    .p-btn-area { display: flex; flex-direction: column; gap: 10px; }
+
+    .btn-logout {
+      width: 100%; background: #d32f2f; color: #fff;
+      border: none; border-radius: 12px; padding: 14px;
+      font-size: 14px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      cursor: pointer; transition: background .2s, transform .1s;
+    }
+    .btn-logout:hover { background: #b71c1c; }
+    .btn-logout:active { transform: scale(.98); }
+    .btn-logout svg { width: 18px; height: 18px; stroke: #fff; fill: none; stroke-width: 2; }
+
+    .btn-delete {
+      width: 100%; background: #fff; color: #d32f2f;
+      border: 1.5px solid #fdd0cc; border-radius: 12px; padding: 14px;
+      font-size: 14px; font-weight: 600;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      cursor: pointer; transition: background .2s, transform .1s;
+    }
+    .btn-delete:hover { background: #fff5f5; }
+    .btn-delete:active { transform: scale(.98); }
+    .btn-delete svg { width: 18px; height: 18px; stroke: #d32f2f; fill: none; stroke-width: 2; }
+
+    .session-id {
+      text-align: center; font-size: 11px; color: #9ca3af;
+      font-family: monospace; padding: 6px 0 4px;
+    }
+
+    svg { display: block; }

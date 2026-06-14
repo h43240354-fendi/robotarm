@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <link rel="icon" type="image/svg+xml" href="../assets/arm.svg?">
+  <title>Kalibrasi</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <script src="../js/auth.js"></script>
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/home.css">
+  <link rel="stylesheet" href="../css/kalibrasi.css">
+</head>
+<body>
+<div class="layout-root">
+<div id="sidebar-container"></div>
+<div class="app-shell">
+  <div class="topnav">
+    <div class="topnav-left">
+      <div class="topnav-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M 4 21 h 2.5 l 0.5 -2 h 1.5 l 0.5 2 a 2 2 0 0 1 4 0 l 0.5 -2 h 1.5 l 0.5 2 h 2.5" />
+          <path d="M 7.5 19 c 0.8 -1.5 2.2 -2.5 4.5 -2.5 s 3.7 1 4.5 2.5" />
+          <path d="M 10.8 16.5 L 8 12.8" />
+          <path d="M 12.5 17 L 9.3 11.5" />
+          <circle cx="6.5" cy="11.5" r="2.5" />
+          <circle cx="6.5" cy="11.5" r="0.8" /> 
+          <path d="M 8.2 9.8 L 11.2 6.8" />
+          <path d="M 7.2 8.2 L 10.2 5.2" />
+          <circle cx="12" cy="5" r="2.5" />
+          <circle cx="12" cy="5" r="0.8" />
+          <path d="M 13.8 6.8 L 16.2 9.2" />
+          <path d="M 12.8 5.8 L 15.2 8.2" />
+          <circle cx="17.2" cy="10.8" r="1.2" />
+          <path d="M 18.2 10 L 21 10 L 21.5 13" />
+          <path d="M 17.5 11.8 L 17.5 13.5 L 20 14" />
+        </svg>
+      </div>
+      <span class="topnav-title">KALIBRASI</span>
+    </div>
+    <div class="topnav-right">
+      <span class="status-badge offline" id="status-badge">TERPUTUS</span>
+    </div>
+  </div>
+
+  <div class="page-tabs">
+    <button class="page-tab active" id="ptab-ctrl" onclick="switchTab('ctrl')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" width="16" height="16"><rect x="2" y="3" width="20" height="14" rx="2"/> <path d="M8 21h8M12 17v4"/></svg>
+      <b>Kontrol</b>
+    </button>
+    <button class="page-tab" id="ptab-move" onclick="switchTab('move')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" width="16" height="16"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+      <b>Gerakan</b>
+    </button>
+  </div>
+
+  <div class="content">
+    
+    <div class="card" id="conn-card">
+      <div class="sec-label">Koneksi</div>
+      <div class="conn-mode">
+        <button type="button" class="mode-btn active" id="mode-wifi" onclick="setConnectionMode('wifi')">WiFi</button>
+        <button type="button" class="mode-btn" id="mode-usb" onclick="setConnectionMode('usb')">USB</button>
+      </div>
+      <div class="esp-row">
+        <div class="ws-input-wrap" id="ws-input-wrap">
+          <span class="ws-prefix">ws://</span>
+            <input class="ws-input" id="ws-url" type="text" placeholder="192.168.1.x" style="text-align: left; padding-left: 8px;">
+          <span class="ws-suffix">:81</span>
+        </div>
+        <select class="ws-input" id="serial-port" style="display:none;">
+        <option value="">Pilih Port</option>
+      </select>
+        <button class="btn-connect" id="btn-connect">
+          <svg viewBox="0 0 24 24"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg>
+          Hubungkan
+        </button>
+      </div>
+    </div>
+
+    <div class="page active" id="page-ctrl">
+      <div class="card" id="pin-config-card">
+        <div class="sec-label" style="display:flex; align-items:center; justify-content:space-between; margin-bottom:0;">
+          <span>Konfigurasi Pin GPIO</span>
+          <button class="pb-toggle" id="pinToggleBtn" onclick="togglePinCard()">▼</button>
+        </div>
+        <div id="pinConfigBody" class="pin-hidden" style="margin-top: 12px;">
+          <div id="pinConfigGrid"></div>
+          <div class="action-row" style="margin-top:10px;">
+            <button class="act-btn act-gray" onclick="resetPins()">↺ Default</button>
+            <button class="act-btn act-blue" onclick="applyPins()">↗ Terapkan</button>
+          </div>
+          <div class="log-info" style="margin-top:8px;">
+            ⚠ Format command: <code>PIN:id:gpio</code> · Pastikan firmware mendukung.
+          </div>
+        </div>
+      </div>
+
+      <div id="servoCards"></div>
+
+      <div class="action-row" style="justify-content: center;">
+        <button class="act-btn act-blue" onclick="resetAll()">Default</button>
+        <button class="act-btn act-blue" onclick="sendAll()">Kirim Semua</button>
+      </div>
+
+      <div class="serial-box">
+        <div class="serial-hdr">  
+          <span class="serial-title">Serial Monitor · 115200</span>
+          <span class="serial-clr" onclick="clearLog()">HAPUS LOG</span>
+        </div>
+        <div class="serial-log" id="log">
+          <div class="log-info">[INFO] Pilih mode koneksi, lalu klik Hubungkan</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="page" id="page-move">
+    <div class="card">
+      <div class="sec-label">Simpan Posisi</div>
+      <button class="save-btn" id="saveBtn" onclick="saveStep()">
+        <svg viewBox="0 0 24 24" stroke-width="2.5" fill="none" stroke="currentColor"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+        SIMPAN POSISI SEKARANG
+      </button>
+      <div class="io-row">
+        <button class="io-btn io-export" onclick="exportSequence()">Ekspor Gerakan</button>
+        <button class="io-btn io-import" onclick="importSequence()">Impor Gerakan</button>
+        <input type="file" id="importFile" accept=".json" style="display:none" onchange="handleImportFile(event)">
+      </div>
+      <div class="step-info-row">
+        <span class="step-info-lbl">Total langkah tersimpan</span>
+        <span class="step-info-val" id="stepCount">0</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="sec-label">Urutan Gerakan</div>
+      <div class="seq-list" id="seqList">
+        <div class="empty-state" id="emptyState">
+          <div class="empty-icon">🤖</div>
+          <div class="empty-title">Belum ada gerakan tersimpan</div>
+          <div class="empty-sub">Atur posisi servo di tab Control,<br>lalu tekan Simpan Posisi Sekarang</div>
+        </div>
+      </div>
+      <button class="act-btn act-red" onclick="clearSequence()" style="width: 100%; justify-content: center; margin-top: 10px;">
+        🗑 Hapus Semua Gerakan
+      </button>
+    </div>
+  </div>
+</div>
+
+  </div> <div class="toast" id="toast"></div>
+
+  <div id="footer-container"></div>
+</div>
+</div>
+
+<div class="modal-backdrop" id="modal-logout">
+  <div class="modal-box">
+    <div class="modal-icon danger">
+      <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#d32f2f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+        <polyline points="16 17 21 12 16 7"></polyline>
+        <line x1="21" y1="12" x2="9" y2="12"></line>
+      </svg>
+    </div>
+    <div class="modal-title">Keluar dari Sistem?</div>
+    <div class="modal-desc">Anda harus memasukkan email dan password kembali untuk masuk kembali</div>
+    <div class="modal-actions">
+      <button class="modal-cancel" id="logout-modal-cancel">Batal</button>
+      <button class="modal-confirm-danger" id="logout-modal-confirm">Logout</button>
+    </div>
+  </div>
+</div>
+
+
+<script src="../js/kalibrasi.js"></script>
+<script src="../js/nav.js"></script>
+<script src="../js/logout.js"></script>
+
+
+<script>
+  async function logout() {
+    const res = await fetch("/api/logout", { method: "POST" });
+    const data = await res.json();
+    if (data.success) {
+      window.location.href = "/";
+    }
+  }
+  // Mobile: bottomnav
+  fetch('../pages/footer.html').then(r => r.text()).then(html => {
+    document.getElementById('footer-container').innerHTML = html;
+  });
+
+  // Desktop: sidebar
+  fetch('../pages/sidebar.html').then(r => r.text()).then(html => {
+    document.getElementById('sidebar-container').innerHTML = html;
+    initNav();
+    initLogout();
+  });
+</script>
+</body>
+</html>
