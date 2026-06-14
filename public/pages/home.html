@@ -282,10 +282,15 @@
     document.getElementById('footer-container').innerHTML = html;
   });
 
-  fetch('/pages/sidebar.html').then(r => r.text()).then(html => {
+  fetch('/pages/sidebar.html')
+  .then(r => r.text())
+  .then(html => {
     document.getElementById('sidebar-container').innerHTML = html;
-    initNav();
-    initLogout();
+    // Kasih sedikit delay agar DOM benar-benar siap
+    setTimeout(() => {
+      initNav();
+      initLogout();
+    }, 100);
   });
 </script>
 </body>
