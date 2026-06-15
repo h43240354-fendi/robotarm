@@ -178,7 +178,7 @@ async function connectUSB() {
     wsConnected  = true;
     resetDashboard();
     setConnectedUI();
-    showToast('USB Connected', 'suc');
+    showToast('USB Terhubung', 'suc');
     appendStatusLog('NET', 'net', 'USB Serial terhubung.');
     readSerialLoop();
     pingTimer = setInterval(async () => {
@@ -343,14 +343,14 @@ function stopUptime() {
 }
 
 const COLORS = {
-  'Blue'  : { label:'Biru',   hex:'#1a56db' },
-  'Red'   : { label:'Merah',  hex:'#d32f2f' },
-  'Yellow': { label:'Kuning', hex:'#f9a825' },
-  'Green' : { label:'Hijau',  hex:'#2d7d32' },
-  'White' : { label:'Putih',  hex:'#bdbdbd' },
-  'Black' : { label:'Hitam',  hex:'#424242' },
-  'Orange': { label:'Oranye', hex:'#e65100' },
-  'Purple': { label:'Ungu',   hex:'#6a1b9a' },
+  'Biru'  : { label:'Biru',   hex:'#1a56db' },
+  'Merah'   : { label:'Merah',  hex:'#d32f2f' },
+  'Kuning': { label:'Kuning', hex:'#f9a825' },
+  'Hijau' : { label:'Hijau',  hex:'#2d7d32' },
+  'Putih' : { label:'Putih',  hex:'#bdbdbd' },
+  'Hitam' : { label:'Hitam',  hex:'#424242' },
+  'Oranye': { label:'Oranye', hex:'#e65100' },
+  'Ungu': { label:'Ungu',   hex:'#6a1b9a' },
 };
 
 function updateSensorColor(colorName, rIn, gIn, bIn) {
@@ -388,11 +388,11 @@ function handleData(d) {
     document.getElementById('btn-stop').style.opacity  = '0.5';
     
     if (typeof appendStatusLog === 'function') {
-      appendStatusLog('EMRGCY', 'warn', 'ROBOT BERHENTI PAKSA!!!');
+      appendStatusLog('EMRGCY', 'warn', 'BERHENTI PAKSA!!!');
     }
     
     const badge = document.getElementById('sensor-badge');
-    if (badge) { badge.textContent = 'EMERGENCY STOP'; badge.style.background = '#d32f2f'; }
+    if (badge) { badge.textContent = 'EMERGENCY'; badge.style.background = '#d32f2f'; }
     const nameEl = document.getElementById('sensor-color-name');
     if (nameEl) { nameEl.textContent = 'BERHENTI PAKSA'; nameEl.style.color = '#d32f2f'; }
     
@@ -401,42 +401,42 @@ function handleData(d) {
     return;
   }
 
-  if (d.status === 'stopping') {
+  if (d.status === 'Sedang Berhenti') {
     document.getElementById('btn-start').style.opacity = '0.5';
     document.getElementById('btn-stop').style.opacity  = '0.5';
     
-    if (lastSystemStatus !== 'stopping' && typeof appendStatusLog === 'function') {
-      appendStatusLog('STOPPING', 'warn', 'Robot menyelesaikan langkah terakhir...');
+    if (lastSystemStatus !== 'Sedang Berhenti' && typeof appendStatusLog === 'function') {
+      appendStatusLog('Berhenti', 'warn', 'Robot menyelesaikan langkah terakhir');
     }
     
     const badge = document.getElementById('sensor-badge');
-    if (badge) { badge.textContent = 'PREPARING TO STOP'; badge.style.background = '#f9a825'; }
+    if (badge) { badge.textContent = 'BERSIAP BERHENTI'; badge.style.background = '#f9a825'; }
   }
 
-  if (d.status === 'stopped') {
+  if (d.status === 'Berhenti') {
     document.getElementById('btn-start').style.opacity = '0.5';
     document.getElementById('btn-stop').style.opacity  = '1';
   
-    if (lastSystemStatus !== 'stopped' && typeof appendStatusLog === 'function') {
+    if (lastSystemStatus !== 'Berhenti' && typeof appendStatusLog === 'function') {
       appendStatusLog('STOP', 'stop', 'Robot berhenti');
     }
     
     const badge = document.getElementById('sensor-badge');
-    if (badge) { badge.textContent = 'STANDBY / IDLE'; badge.style.background = '#8a9bb5'; }
+    if (badge) { badge.textContent = 'STANDBY'; badge.style.background = '#8a9bb5'; }
     const nameEl = document.getElementById('sensor-color-name');
     if (nameEl) { nameEl.textContent = 'None'; nameEl.style.color = '#8a9bb5'; }
   }
 
-  if (d.status === 'running') {
+  if (d.status === 'Berjalan') {
     document.getElementById('btn-start').style.opacity = '1';
     document.getElementById('btn-stop').style.opacity  = '0.5';
   
-    if (lastSystemStatus !== 'running' && typeof appendStatusLog === 'function') {
-      appendStatusLog('START', 'start', 'Robot mulai berjalan.');
+    if (lastSystemStatus !== 'Berjalan' && typeof appendStatusLog === 'function') {
+      appendStatusLog('START', 'start', 'Robot mulai berjalan');
     }
   }
 
-  if (d.color !== undefined && d.color !== 'NONE' && d.color !== 'Unknown') {
+  if (d.color !== undefined && d.color !== 'NONE' && d.color !== 'Unknown' && d.color !== 'Tidak Diketahui') {
     updateSensorColor(d.color, d.r, d.g, d.b);
     if (typeof appendActivityLog === 'function') appendActivityLog(d.color, d.r||0, d.g||0, d.b||0);
   }
@@ -529,14 +529,40 @@ function setControlEnabled(on) {
 }
 
 function exportData() {
-  const rows = [['Jam','Merah','Biru'], ...hourData.map((d,i) => [i+':00', d.b, d.y])];
-  const csv  = rows.map(r => r.join(',')).join('\n');
-  const blob = new Blob([csv], { type: 'text/csv' });
+  const dayNames = ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'];
+  const rows = [];
+
+  rows.push(['Kategori', 'Label', 'Merah', 'Biru']);
+
+  rows.push(['', '', '', '']);
+  rows.push(['--- DATA PER MENIT ---', '', '', '']);
+  minuteData.forEach((d, i) => {
+    const t = new Date(Date.now() - (59 - i) * 60000);
+    const label = t.getHours().toString().padStart(2,'0') + ':' + t.getMinutes().toString().padStart(2,'0');
+    rows.push(['Menit', label, d.b, d.y]);
+  });
+
+  rows.push(['', '', '', '']);
+  rows.push(['--- DATA PER JAM ---', '', '', '']);
+  hourData.forEach((d, i) => {
+    rows.push(['Jam', i + ':00', d.b, d.y]);
+  });
+
+  rows.push(['', '', '', '']);
+  rows.push(['--- DATA PER HARI ---', '', '', '']);
+  dayData.forEach((d, i) => {
+    rows.push(['Hari', dayNames[i], d.b, d.y]);
+  });
+
+  const csv  = rows.map(r => r.join(';')).join('\n');
+  const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
   const url  = URL.createObjectURL(blob);
   const a    = document.createElement('a');
-  a.href = url; a.download = 'arm_robot_laporan.csv'; a.click();
+  a.href = url;
+  a.download = `arm_robot_full_${new Date().toISOString().slice(0,16).replace('T','_').replace(':','-')}.csv`;
+  a.click();
   URL.revokeObjectURL(url);
-  showToast('Laporan diunduh', 'suc');
+  showToast('Laporan lengkap diunduh', 'suc');
 }
 
 function showToast(msg, type = 'info') {
