@@ -382,6 +382,21 @@ function updateSensorColor(colorName, rIn, gIn, bIn) {
   if (rgb) rgb.textContent = `R:${r}   G:${g}   B:${b}`;
 }
 
+function resetSensorDisplay() {
+  const defaultHex = '#8a9bb5';
+  
+  const icon = document.getElementById('sensor-icon');
+  if (icon) icon.style.background = defaultHex;
+
+  const swatch = document.getElementById('sensor-swatch');
+  if (swatch) swatch.style.background = `rgb(0,0,0)`;
+
+  const rgb = document.getElementById('sensor-rgb');
+  if (rgb) rgb.textContent = `R:0   G:0   B:0`;
+
+  lastColor = null;
+}
+
 function handleData(d) {
   if (d.status === 'emergency') {
     document.getElementById('btn-start').style.opacity = '0.5';
@@ -399,6 +414,8 @@ function handleData(d) {
     showToast('EMERGENCY AKTIF', 'err');
     lastSystemStatus = d.status;
     return;
+
+    resetSensorDisplay();
   }
 
   if (d.status === 'Sedang Berhenti') {
@@ -425,7 +442,9 @@ function handleData(d) {
     if (badge) { badge.textContent = 'STANDBY'; badge.style.background = '#8a9bb5'; }
     const nameEl = document.getElementById('sensor-color-name');
     if (nameEl) { nameEl.textContent = 'None'; nameEl.style.color = '#8a9bb5'; }
-  }
+
+    resetSensorDisplay();
+  } 
 
   if (d.status === 'Berjalan') {
     document.getElementById('btn-start').style.opacity = '1';
